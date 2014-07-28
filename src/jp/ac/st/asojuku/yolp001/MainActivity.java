@@ -3,6 +3,8 @@ package jp.ac.st.asojuku.yolp001;
 import jp.co.yahoo.android.maps.GeoPoint;
 import jp.co.yahoo.android.maps.MapController;
 import jp.co.yahoo.android.maps.MapView;
+import jp.co.yahoo.android.maps.weather.WeatherOverlay;
+import jp.co.yahoo.android.maps.weather.WeatherOverlay.WeatherOverlayListener;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
@@ -13,7 +15,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends Activity implements LocationListener{
+public class MainActivity extends Activity implements LocationListener, WeatherOverlayListener{
 
 	LocationManager mLocationManager = null;
 
@@ -22,8 +24,9 @@ public class MainActivity extends Activity implements LocationListener{
 	int lastLatitude = 0;
 
 	int lastLongitude = 0;
-
-
+	
+	WeatherOverlay mWeatherOverlay = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +66,14 @@ public class MainActivity extends Activity implements LocationListener{
 		String provider = mLocationManager.getBestProvider(criteria, true);
 
 		mLocationManager.requestLocationUpdates(provider, 0, 0, this);
+		
+		mWeatherOverlay = new WeatherOverlay(this);
+		
+		mWeatherOverlay.setWeatherOverlayListener(this);
+		
+		mWeatherOverlay.startAutoUpdate(1);
+		
+		mMapView.getOverlays().add(mWeatherOverlay);
 	}
 
 
@@ -122,6 +133,18 @@ public class MainActivity extends Activity implements LocationListener{
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void errorUpdateWeather(WeatherOverlay arg0, int arg1) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	@Override
+	public void finishUpdateWeather(WeatherOverlay arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+		
 	}
 
 
